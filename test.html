@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Riverford Data Analytics</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/Chart.bundle.js"></script>
+        <script
+              src="https://code.jquery.com/jquery-1.8.2.js"
+              integrity="sha256-z6aVFjdeJ+VlGcrnHyiBjg5SUVtw5wWmANHbRZmYM1o="
+              crossorigin="anonymous"></script>
+        <style type="text/css">
+            /* Chart.js */
+            @-webkit-keyframes chartjs-render-animation {
+                from {
+                    opacity: 0.99
+                }
+                to {
+                    opacity: 1
+                }
+            }
+
+            @keyframes chartjs-render-animation {
+                from {
+                    opacity: 0.99
+                }
+                to {
+                    opacity: 1
+                }
+            }
+
+            .chartjs-render-monitor {
+                -webkit-animation: chartjs-render-animation 0.001s;
+                animation: chartjs-render-animation 0.001s;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Riverford Data Analytics</h1>
+
+        <!-- TODO Add HTML containers for data visualisation -->
+
+       <canvas id="canvas"></canvas>
+<script>
+var jsonfile = {
+   "jsonarray": [{
+      "name": "Joe",
+      "age": 25
+   }, {
+      "name": "Tom",
+      "age": 18
+   }, {
+      "name": "Ioan",
+      "age": 23
+   }]
+};
+
+var labels = jsonfile.jsonarray.map(function(e) {
+   return e.name;
+});
+var data = jsonfile.jsonarray.map(function(e) {
+   return e.age;
+});;
+
+var ctx = canvas.getContext('2d');
+var config = {
+   type: 'line',
+   data: {
+      labels: labels,
+      datasets: [{
+         label: 'Graph Line',
+         data: data,
+         backgroundColor: 'rgba(0, 119, 204, 0.3)'
+      }]
+   }
+};
+
+var chart = new Chart(ctx, config);
+</script>
+
+    </body>
+</html>

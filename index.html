@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Riverford Data Analytics</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/Chart.bundle.js"></script>
+        <script
+              src="https://code.jquery.com/jquery-1.8.2.js"
+              integrity="sha256-z6aVFjdeJ+VlGcrnHyiBjg5SUVtw5wWmANHbRZmYM1o="
+              crossorigin="anonymous"></script>
+        <style type="text/css">
+            /* Chart.js */
+            @-webkit-keyframes chartjs-render-animation {
+                from {
+                    opacity: 0.99
+                }
+                to {
+                    opacity: 1
+                }
+            }
+
+            @keyframes chartjs-render-animation {
+                from {
+                    opacity: 0.99
+                }
+                to {
+                    opacity: 1
+                }
+            }
+
+            .chartjs-render-monitor {
+                -webkit-animation: chartjs-render-animation 0.001s;
+                animation: chartjs-render-animation 0.001s;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Riverford Data Analytics</h1>
+
+        <!-- TODO Add HTML containers for data visualisation -->
+<button onclick=don(category,category_sum)>Turn ON the light</button>
+<button onclick=Draw(keysSorted[0],PriceSorted)>Turn ON the li222ght</button>
+        <canvas id="myChart" width="400" height="400"></canvas>
+
+        <div style="width: 300px; height: 300px">
+  <canvas id="myChart2"></canvas>
+</div>
+
+<script>
+var sourceData; var keysSorted=[]; var category= []; var category_sum= []; //сумма по категории
+  var PriceSorted=[]; var j=-1; var myChart=null; var myDoughnutChart;
+                 $.getJSON("data.json", function(kut) {
+
+                    $.each(kut,function(key, value){
+                         //console.log(key);
+                         category.push(key);
+                         j++;
+                         category_sum[j]=0;
+                         keysSorted[j] = Object.keys(value).sort(function(a,b){return value[b]-value[a]}); keysSorted[j].length = 10; //режем до 10
+//console.log(category); 
+                          PriceSorted[j]= Object.values(value).sort(function(a,b){return b - a}); PriceSorted[j].length=10;
+                         
+                    $.each(value,function(keyp, valuep){
+                         //console.log(keyp);
+                        
+                        // arrayc[i]=valuep;
+                         
+                         category_sum[j]=category_sum[j]+valuep;
+                      //  console.log(category_sum[j]);
+                         
+                    });
+                    });
+//arrayc.sort(function(a, b){return b - a});
+console.log(PriceSorted);
+console.log(keysSorted); //тут рассортированные продукты индекс от 0 до 4
+                 });
+                 
+                 console.log(PriceSorted);
+                // console.log(arrayp,PriceSorted);
+                 
+            // Initial data load
+            fetch("data.json", {
+                method: "GET",
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                })
+            }).then(function (body) {
+                return body.json();
+            }).then(function (data) {
+                sourceData = data;
+                //console.log('sourceData', sourceData); 
+                // console.log('Veg', sourceData.Veg);
+                // var array=[sourceData.Veg];
+                //  console.log(array[0]);
+                // var str = JSON.stringify(sourceData.Veg);
+                // console.log(str);
+                
+                 //console.log('ddd',sourceData.Veg[10]);
+
+             }
+                 )
+
+
+
+function Draw(label,data){
+    myDoughnutChart.destroy();
+var ctx = document.getElementById("myChart");
+ myChart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+        labels: label,
+        datasets: [{
+            label: '# of Sold Products',
+            data: data,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+}); }
+
+
+
+
+   function don(labels, data){
+    if (myChart!=null){
+    myChart.destroy();}
+    var canvas = document.getElementById("myChart");
+    var ctx = canvas.getContext("2d");
+     myDoughnutChart = new Chart(ctx, {
+    type: 'doughnut',
+data: {
+    labels: labels,
+    datasets: [
+   {
+    label: 'Points',
+    backgroundColor: ['#FF0000','#FFFF00','#FFA500','#00FFFF','#0000FF'],
+    data : data
+   }
+    ]
+},
+options: {
+
+}
+    
+});
+    canvas.onclick = function(evt) {
+      var activePoints = myDoughnutChart.getElementsAtEvent(evt);
+      if (activePoints[0]) {
+        var chartData = activePoints[0]['_chart'].config.data;
+        var idx = activePoints[0]['_index'];
+
+        var label = chartData.labels[idx];
+        var value = chartData.datasets[0].data[idx];
+
+        // var url = "http://example.com/?label=" + label + "&value=" + value;
+        // console.log(url);
+        // alert(url);
+        for (var i = 0; i <labels.length; i++) {
+            if (labels[i]==label) {Draw(keysSorted[i],PriceSorted[i])};
+           
+        };
+        //Draw(category,category_sum);
+      }
+    };
+}
+
+
+
+
+// var data = {
+//   datasets: [{
+//     data: [300, 50, 100],
+//     backgroundColor: [
+//       "#F7464A",
+//       "#46BFBD",
+//       "#FDB45C"
+//     ]
+//   }],
+//   labels: [
+//     "Red",
+//     "Green",
+//     "Yellow"
+//   ]
+// };
+
+// $(document).ready(
+//   function() {
+//     var canvas = document.getElementById("myChart2");
+//     var ctx = canvas.getContext("2d");
+//     var myDoughnutChart = new Chart(ctx, {
+//     type: 'doughnut',
+// data: {
+//     labels: ['dsdsds','dssds'],
+//     datasets: [
+//    {
+//     label: 'Points',
+//     backgroundColor: ['#FF0000','#FFFF00','#FFA500','#00FFFF','#0000FF'],
+//     data : [10,20]
+//    }
+//     ]
+// },
+// options: {
+
+// }
+    
+// });
+
+//     canvas.onclick = function(evt) {
+//       var activePoints = myDoughnutChart.getElementsAtEvent(evt);
+//       if (activePoints[0]) {
+//         var chartData = activePoints[0]['_chart'].config.data;
+//         var idx = activePoints[0]['_index'];
+
+//         var label = chartData.labels[idx];
+//         var value = chartData.datasets[0].data[idx];
+
+//         var url = "http://example.com/?label=" + label + "&value=" + value;
+//         console.log(url);
+//         alert(url);
+//         Draw(category,category_sum);
+//       }
+//     };
+//   }
+// );
+
+
+</script>
+
+    </body>
+</html>
